@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt-nodejs');
 
 const app = express();
 
@@ -10,7 +11,6 @@ const database = {
       id: '123',
       name: 'John', 
       email: 'john@gmail.com',
-      password: 'cookies',
       entries: 0,
       joined: new Date(),
     },
@@ -18,10 +18,16 @@ const database = {
       id: '124',
       name: 'Sally', 
       email: 'sally@gmail.com',
-      password: 'bananas',
       entries: 0,
       joined: new Date(),
     }    
+  ],
+  login: [
+    {
+      id: '987',
+      hash: '',
+      email: 'john@gmail.com'
+    }
   ]
 }
 
@@ -30,6 +36,12 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
+  bcrypt.compare("apples", '$2a$10$c1GGcI6smOGQbpJM6x8Au.ZEOa.tY36oAAiJuON65p4MwFH2PNyX6', function(err, res) {
+    console.log('First guess', res);
+  });
+  bcrypt.compare("veggies", '$2a$10$c1GGcI6smOGQbpJM6x8Au.ZEOa.tY36oAAiJuON65p4MwFH2PNyX6', function(err, res) {
+    console.log('Second guess', res);
+  });
   if (req.body.email === database.users[0].email && 
       req.body.password === database.users[0].password) {
     res.json('success');      
