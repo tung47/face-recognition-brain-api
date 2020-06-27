@@ -41,15 +41,9 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
-  bcrypt.compare("apples", '$2a$10$c1GGcI6smOGQbpJM6x8Au.ZEOa.tY36oAAiJuON65p4MwFH2PNyX6', function(err, res) {
-    console.log('First guess', res);
-  });
-  bcrypt.compare("veggies", '$2a$10$c1GGcI6smOGQbpJM6x8Au.ZEOa.tY36oAAiJuON65p4MwFH2PNyX6', function(err, res) {
-    console.log('Second guess', res);
-  });
   if (req.body.email === database.users[0].email && 
       req.body.password === database.users[0].password) {
-    res.json('success');      
+    res.json(database.users[0]);      
   } else {
     res.status(400).json('Error logging in');
   }
@@ -61,7 +55,6 @@ app.post('/register', (req, res) => {
     id: '125',
     name: name, 
     email: email,
-    password: password,
     entries: 0,
     joined: new Date()
   })
