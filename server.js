@@ -12,14 +12,16 @@ const database = {
   users: [
     {
       id: '123',
-      name: 'John', 
+      name: 'John',
+      password: 'cookies',
       email: 'john@gmail.com',
       entries: 0,
       joined: new Date(),
     },
     {
       id: '124',
-      name: 'Sally', 
+      name: 'Sally',
+      password: 'bananas',
       email: 'sally@gmail.com',
       entries: 0,
       joined: new Date(),
