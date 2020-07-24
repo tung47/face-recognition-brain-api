@@ -52,12 +52,22 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
-  if (req.body.email === database.users[0].email && 
-      req.body.password === database.users[0].password) {
-    res.json(database.users[0]);      
-  } else {
-    res.status(400).json('Error logging in');
-  }
+  db.select('email', 'hash').from('login')
+    .where('email', '=', req.body.email)
+    .then(data => {
+      const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+      if (isValid) {
+        return db.select('*').from('users')
+          .where('email', '=', req.body.email)
+          .then(user => {
+            res.json(user[0])
+          })
+          .catch(err => res.status(400).json('unable to get user'))
+      } else {
+        res.status(400).json('wrong credentials')
+      }
+    })
+    .catch(err => res.status(400).json('wrong credentials'))
 })
 
 app.post('/register', (req, res) => {
@@ -86,7 +96,7 @@ app.post('/register', (req, res) => {
     .catch(trx.rollback)
   })
   
-    .catch(err => res.status(400).json('Unable to register'))
+    .catch(err => res.status(400).json('unable to register'))
 })
 
 app.get('/profile/:id', (req, res) => {
@@ -96,10 +106,10 @@ app.get('/profile/:id', (req, res) => {
       if (user.length) {
         res.json(user[0])
       } else {
-        res.status(400).json('Not found')
+        res.status(400).json('not found')
       }
     })
-    .catch(err => res.status(400).json('Error getting user'))
+    .catch(err => res.status(400).json('error getting user'))
 })
 
 app.put('/image', (req, res) => {
@@ -110,7 +120,7 @@ app.put('/image', (req, res) => {
   .then(entries => {
     res.json(entries[0]);
   })
-  .catch(err => res.status(400).json('Unable to get entries'))
+  .catch(err => res.status(400).json('unable to get entries'))
 })
 
 app.listen(3000, () => {
